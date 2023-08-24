@@ -1,0 +1,21 @@
+﻿<Properties StartupConfiguration="{4C374927-BBAD-4D83-9A4A-747F08C46CDC}|https">
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workbench ActiveDocument="MondayGetColumns/MondayGetColumns.csproj">
+    <Files>
+      <File FileName="MondayGetColumns/MondayGetColumns.csproj" Line="1" Column="1" />
+      <File FileName="MondayGetColumns/Pages/MondayBoard.razor" Line="22" Column="34" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.MondayGetColumns PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <Debugger.DebugSourceFolders />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

@@ -1,0 +1,103 @@
+﻿@page "/mondayboard"
+
+@using System.Text.Json
+
+@inject MondayGetColumns.Data.MondayService MondayService
+
+
+<h3>Monday.com Board Manager</h3>
+
+<!-- Fetch Section -->
+<button @onclick="FetchData">Fetch Board Data</button>
+
+@if (fetchedData.HasValue)
+{
+    <h4>Board Data:</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Item ID</th>
+                <th>Item Name</th>
+                <th>Deeltaken</th>
+                <th>Eigenaar</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Aantekeningen</th>
+                <th>Laatst bijgewerkt</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in fetchedData.Value.GetProperty("data").GetProperty("boards")[0].GetProperty("items").EnumerateArray())
+            {
+                var deeltakenValue = GetColumnValue(item, "Deeltaken");
+                var eigenaarValue = GetColumnValue(item, "Eigenaar");
+                var deadlineValue = GetColumnValue(item, "Deadline");
+                var statusValue = GetColumnValue(item, "Status");
+                var aantekeningenValue = GetColumnValue(item, "Aantekeningen");
+                var laatstBijgewerktValue = GetColumnValue(item, "Laatst bijgewerkt");
+
+                <tr>
+                    <td>@item.GetProperty("id").GetString()</td>
+                    <td>@item.GetProperty("name").GetString()</td>
+                    <td>@(string.IsNullOrEmpty(deeltakenValue) ? "0" : JsonDocument.Parse(deeltakenValue).RootElement.GetProperty("linkedPulseIds").GetArrayLength())</td>
+                    <td>@(string.IsNullOrEmpty(eigenaarValue) ? "" : JsonDocument.Parse(eigenaarValue).RootElement.GetProperty("personsAndTeams")[0].GetProperty("id").GetInt32())</td>
+                    <td>@(string.IsNullOrEmpty(deadlineValue) ? "" : JsonDocument.Parse(deadlineValue).RootElement.GetProperty("date").GetString())</td>
+                    <td>@(string.IsNullOrEmpty(statusValue) ? "" : JsonDocument.Parse(statusValue).RootElement.GetProperty("index").GetInt32())</td>
+                    <td>@aantekeningenValue</td>
+                    <td>@(string.IsNullOrEmpty(laatstBijgewerktValue) ? "" : JsonDocument.Parse(laatstBijgewerktValue).RootElement.GetProperty("changed_at").GetString())</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+<!-- Update Section -->
+@*<h4>Update Column Value:</h4>
+    <label for="itemId">Item ID:</label>
+    <input type="text" @bind="itemId" id="itemId" />
+
+    <label for="columnId">Column ID:</label>
+    <input type="text" @bind="columnId" id="columnId" />
+
+    <label for="newValue">New Value:</label>
+    <input type="text" @bind="newValue" id="newValue" />
+
+    <button @onclick="UpdateData">Update Data</button>
+    @if (!string.IsNullOrEmpty(updateResponse))
+    {
+        <h4>Update Response:</h4>
+        <pre>@updateResponse</pre>
+    }*@
+
+@code {
+    private JsonElement? fetchedData;
+    private string updateResponse = "";
+    private string itemId = "";
+    private string columnId = "";
+    private string newValue = "";
+
+    private async Task FetchData()
+    {
+        fetchedData = await MondayService.FetchBoardDataAsync();
+    }
+
+    //private async Task UpdateData()
+    //{
+    //    var response = await MondayService.UpdateBoardDataAsync(itemId, columnId, newValue);
+    //    updateResponse = response.ToString();
+    //}
+
+    private string GetColumnValue(JsonElement item, string title)
+    {
+        foreach (var columnValue in item.GetProperty("column_values").EnumerateArray())
+        {
+            if (columnValue.GetProperty("title").GetString() == title)
+            {
+                return columnValue.GetProperty("value").GetString();
+            }
+        }
+        return string.Empty; // Return empty string if not found
+    }
+
+}
